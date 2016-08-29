@@ -1,0 +1,22 @@
+{
+  "load_extensions": {
+    "usability/init_cell/main": true,
+    "usability/toggle_all_line_numbers/main": true,
+    "usability/execute_time/ExecuteTime": true,
+    "usability/latex_envs/latex_envs": true,
+    "usability/splitcell/splitcell": true,
+    "usability/hide_input/main": true,
+    "usability/highlighter/highlighter": true,
+    "usability/hinterland/hinterland": false,
+    "config/config_menu/main": true,
+    "usability/hide_input_all/main": true,
+    "usability/collapsible_headings/main": true,
+    "usability/codefolding/main": true,
+    "usability/toc2/main": true,
+    "styling/table_beautifier/main": false,
+    "usability/code_font_size/code_font_size": true,
+    "usability/datestamper/main": true
+  }
+}
+
+
