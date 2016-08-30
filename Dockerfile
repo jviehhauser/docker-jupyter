@@ -110,11 +110,6 @@ RUN jupyter contrib nbextension install --user
 ADD ./notebook.json /root/.jupyter/notebook.json
 RUN chmod a+x /root/.jupyter/notebook.json
 
-# Install  packages as jovyan and then move the kernelspec out
-# to the system share location. Avoids problems with runtime UID change not
-# taking effect properly on the .local folder in the jovyan home dir.
-# COPY kernel.json $CONDA_DIR/share/jupyter/kernels/isilon_python2/
-# RUN chmod -R go+rx $CONDA_DIR/share/jupyter
 
 VOLUME /notebooks
 VOLUME /misc
