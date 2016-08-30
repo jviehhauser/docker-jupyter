@@ -1,16 +1,12 @@
 # ![Jupyter Logo](https://avatars3.githubusercontent.com/u/7388996?v=3&s=200) Dockerized Jupyter Notebook 
 
-## Description
+![docker automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg) ![docker maintained](https://img.shields.io/maintenance/yes/2016.svg) ![docker pulls](https://img.shields.io/docker/pulls/jviehhauser/jupyter-docker.svg)
 
+## Description
 [Jupyter](http://blog.jupyter.org/) is a web-based tool supporting exploratory data analysis, which is offered here as a Docker file pre-packaged with miniconda and supporting for execution .
 
 ## Usage
-
 You can either start the image directly with Docker, or use the Nomad-Docker-Wrapper if you are running the containers on Nomad.
-
-## Python Packages
-
-![docker automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg) ![docker maintained](https://img.shields.io/maintenance/yes/2016.svg) ![docker pulls](https://img.shields.io/docker/pulls/jviehhauser/jupyter-docker.svg)
 
 ## What the image offers
 * Python 2/3 with a list of base packages pre-installed (cf. requirements.txt)
