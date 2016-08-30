@@ -5,6 +5,7 @@ USER root
 # Install all OS dependencies for notebook server that starts but lacks all
 # features (e.g., download as all possible file formats)
 ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && apt-get install -yq --no-install-recommends \
     wget \
     bzip2 \
@@ -112,12 +113,15 @@ RUN chmod a+x /root/.jupyter/notebook.json
 # Install  packages as jovyan and then move the kernelspec out
 # to the system share location. Avoids problems with runtime UID change not
 # taking effect properly on the .local folder in the jovyan home dir.
-COPY kernel.json $CONDA_DIR/share/jupyter/kernels/isilon_python2/
-RUN chmod -R go+rx $CONDA_DIR/share/jupyter
+# COPY kernel.json $CONDA_DIR/share/jupyter/kernels/isilon_python2/
+# RUN chmod -R go+rx $CONDA_DIR/share/jupyter
 
 VOLUME /notebooks
 VOLUME /misc
 VOLUME /data
+
+# copy configuration templates
+COPY conf.templates conf.templates
 
 EXPOSE 8888
 

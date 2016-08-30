@@ -1,0 +1,5 @@
+{
+    "argv": ["$MOUNT_PY2", "-m", "IPython.kernel", "-f", "{connection_file}"],
+    "display_name": "mount_py2",
+    "language": "python"
+}
