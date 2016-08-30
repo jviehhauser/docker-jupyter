@@ -7,10 +7,10 @@ function config_add_kernel_json {
   local conf_name=$1
   local kernel_path=$2
   local envs_to_replace=$3
-  mkdir kernel_path
+  mkdir $kernel_path
 
   echo "Creating and copying $conf_name"
-  envsubst $envs_to_replace < conf.templates/$conf_name.template > kernel_path/$conf_name
+  envsubst $envs_to_replace < conf.templates/$conf_name.template > $kernel_path/$conf_name
 }
 
 if [ -z ${MOUNT_PY2+x} ] #note the lack of a $ sigil

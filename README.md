@@ -33,7 +33,7 @@ docker run -p 8888:8888 \
   -e PASSWORD="sha1:74ba40f8a388:c913541b7ee99d15d5ed31d4226bf7838f83a50e" \
   -e MOUNT_PY2=/misc/miniconda2/bin/python \
   -v /some/git/project:/notebooks \
-  -v /some/git/project:/notebooks \
+  -v /misc:/misc \
   jviehhauser/docker-jupyter \
   start_notebook.sh
 ```
