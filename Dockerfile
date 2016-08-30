@@ -38,11 +38,12 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
-# install tini, operating as a process subreaper for jupyter to prevent kernel crashes
-RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.9.0/tini && \
-    echo "faafbfb5b079303691a939a747d7f60591f2143164093727e870b289a44d9872 *tini" | sha256sum -c - && \
-    mv tini /usr/local/bin/tini && \
-    chmod +x /usr/local/bin/tini
+# Add Tini. Tini operates as a process subreaper for jupyter. This prevents
+# kernel crashes.
+ENV TINI_VERSION v0.10.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/local/bin/tini
+RUN chmod +x /usr/local/bin/tini
+ENTRYPOINT ["/usr/local/bin/tini", "--"]
 
 # configure environment
 ENV CONDA_DIR /opt/conda
@@ -108,10 +109,10 @@ RUN jupyter contrib nbextension install --user
 ADD ./notebook.json /root/.jupyter/notebook.json
 RUN chmod a+x /root/.jupyter/notebook.json
 
-# Install IJulia packages as jovyan and then move the kernelspec out
+# Install  packages as jovyan and then move the kernelspec out
 # to the system share location. Avoids problems with runtime UID change not
 # taking effect properly on the .local folder in the jovyan home dir.
-COPY kernel.json $CONDA_DIR/share/jupyter/kernels/
+COPY kernel.json $CONDA_DIR/share/jupyter/kernels/isilon_python2/
 RUN chmod -R go+rx $CONDA_DIR/share/jupyter
 
 VOLUME /notebooks
@@ -121,7 +122,7 @@ VOLUME /data
 EXPOSE 8888
 
 # Configure container startup
-ENTRYPOINT ["tini", "--"]
+ENTRYPOINT ["usr/local/bin/tini", "--"]
 CMD ["start-notebook.sh"]
 
 # Add local files as late as possible to avoid cache busting
@@ -129,5 +130,8 @@ COPY start-notebook.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/start-notebook.sh
 COPY jupyter_notebook_config.py root/.jupyter/
 RUN chmod go+rx root/.jupyter
+RUN chmod -R a+x /misc
 # RUN chown -R root root/.jupyter
+
+ENV SHELL /bin/bash
 
