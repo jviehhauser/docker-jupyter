@@ -1,4 +1,4 @@
-# ![Jupyter Logo](http://blog.jupyter.org/content/images/2015/02/jupyter-sq-text.png) Dockerized Jupyter Notebook 
+# ![Jupyter Logo](https://avatars3.githubusercontent.com/u/7388996?v=3&s=200) Dockerized Jupyter Notebook 
 
 ## Description
 
@@ -10,7 +10,7 @@ You can either start the image directly with Docker, or use the Nomad-Docker-Wra
 
 ## Python Packages
 
-![docker pulls](https://img.shields.io/docker/pulls/jupyter/base-notebook.svg) ![docker stars](https://img.shields.io/docker/stars/jupyter/base-notebook.svg)
+![docker automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg) ![docker maintained](https://img.shields.io/maintenance/yes/2016.svg) ![docker pulls](https://img.shields.io/docker/pulls/jviehhauser/jupyter-docker.svg)
 
 ## What the image offers
 * Python 2/3 with a list of base packages pre-installed (cf. requirements.txt)

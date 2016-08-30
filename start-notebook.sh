@@ -17,7 +17,7 @@ if [ -z ${MOUNT_PY2+x} ] #note the lack of a $ sigil
 then
     echo "Python2 mount path is not set"
 else
-    echo "Python2 mount path is set to '$var'"
+    echo "Python2 mount path is set to '$MOUNT_PY2'"
     config_add_kernel_json kernel.json $CONDA_DIR/share/jupyter/kernels/isilon_python2/
 fi
 
