@@ -2,37 +2,47 @@ FROM debian@sha256:32a225e412babcd54c0ea777846183c61003d125278882873fb2bc97f9057
 
 USER root
 
+# configure environment
+RUN mkdir /jupyter
+ENV CONDA_DIR /opt/conda
+ENV PATH $CONDA_DIR/bin:$PATH
+ENV SHELL /bin/bash
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV HOME /jupyter
+
 # Install all OS dependencies for notebook server that starts but lacks all
 # features (e.g., download as all possible file formats)
 ENV DEBIAN_FRONTEND noninteractive
 
+# installing sudo
+
 RUN apt-get update && apt-get install -yq --no-install-recommends \
+    sudo \
     wget \
     bzip2 \
-    ca-certificates \
-    sudo \
+    unzip \
     locales \
-    libav-tools \
-    libpq-dev \
-    # workaround for pyscopg2 packages / install g++ and make in order to allow installation of xgboost
-    gcc \
-    g++ \
     make \
     build-essential \
     python-dev \
-    unzip \
-    libsm6 \
-    pandoc \
     texlive-latex-base \
     texlive-latex-extra \
     texlive-fonts-extra \
     texlive-fonts-recommended \
     texlive-generic-recommended \
-    libxrender1 \
-    inkscape \
+    && apt-get clean all && \
+    rm -rf /var/lib/apt/lists/*
+
+# packages as a pre-requisite for miniconda2 setup
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+    libpq-dev \
+    gcc \
+    g++ \
     # blas needed for fastFM
     libatlas-base-dev \
-    && apt-get clean && \
+    && apt-get clean all && \
     rm -rf /var/lib/apt/lists/*
 
 # set locale
@@ -45,14 +55,6 @@ ENV TINI_VERSION v0.10.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/local/bin/tini
 RUN chmod +x /usr/local/bin/tini
 ENTRYPOINT ["/usr/local/bin/tini", "--"]
-
-# configure environment
-ENV CONDA_DIR /opt/conda
-ENV PATH $CONDA_DIR/bin:$PATH
-ENV SHELL /bin/bash
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
 
 # Install (mini)conda
 RUN cd /tmp && \
@@ -95,28 +97,21 @@ RUN ln -s $CONDA_DIR/envs/python3/bin/pip $CONDA_DIR/bin/pip3 && \
 ADD requirements.txt requirements.txt
 RUN pip2 --no-cache-dir install -r requirements.txt
 
-# Configure ipython kernel to use matplotlib inline backend by default
-RUN mkdir -p root/.ipython/profile_default/startup
-COPY mplimporthook.py root/.ipython/profile_default/startup/
+# install tensorflow
+ENV TF_BINARY_URL https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.10.0rc0-cp27-none-linux_x86_64.whl
+RUN pip2 install --ignore-installed --upgrade $TF_BINARY_URL
 
 # Install Python 2 kernel spec globally to avoid permission problems when user id switches at runtime
 RUN $CONDA_DIR/bin/python -m ipykernel install
 
 # install nbextensions
 RUN pip2 install https://github.com/ipython-contrib/jupyter_contrib_nbextensions/tarball/master
-# install nbextensions js/css files
 RUN jupyter contrib nbextension install --user
-# configure nbextensions
-ADD ./notebook.json /root/.jupyter/notebook.json
-RUN chmod a+x /root/.jupyter/notebook.json
 
-
+# define volumes
 VOLUME /notebooks
 VOLUME /misc
 VOLUME /data
-
-# copy configuration templates
-COPY conf.templates conf.templates
 
 EXPOSE 8888
 
@@ -124,13 +119,14 @@ EXPOSE 8888
 ENTRYPOINT ["usr/local/bin/tini", "--"]
 CMD ["start-notebook.sh"]
 
-# Add local files as late as possible to avoid cache busting
+# set ipython profiles
+RUN mkdir -p $HOME/.ipython/profile_default/startup
+# configures ipython kernel to use matplotlib inline by default
+COPY mplimporthook.py $HOME/.ipython/profile_default/startup/
+COPY conf.templates conf.templates
+COPY jupyter_notebook_config.py $HOME/.jupyter/
+COPY notebook.json $HOME/.jupyter/nbconfig/
+
+# add startup script
 COPY start-notebook.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/start-notebook.sh
-COPY jupyter_notebook_config.py root/.jupyter/
-RUN chmod go+rx root/.jupyter
-RUN chmod -R a+x /misc
-# RUN chown -R root root/.jupyter
-
-ENV SHELL /bin/bash
-

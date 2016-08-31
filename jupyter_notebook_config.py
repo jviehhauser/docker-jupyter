@@ -8,5 +8,6 @@ c.NotebookApp.open_browser = False
 
 # Set a password if PASSWORD is set
 if 'PASSWORD' in os.environ:
+    from IPython.lib import passwd
     c.NotebookApp.password = passwd(os.environ['PASSWORD'])
     del os.environ['PASSWORD']
