@@ -16,7 +16,7 @@ ipython==5.1.0
 pandas==0.18.1
 pandas-summary
 jinja2==2.8
-Flask==0.10.1
+Flask==1.0
 click==6.6
 ua-parser==0.7.1
 httpagentparser==1.7.8
